@@ -1,0 +1,44 @@
+package bluestringpudding.store;
+
+import bluestringpudding.core.Event;
+import bluestringpudding.core.EventStream;
+import bluestringpudding.core.Id;
+import bluestringpudding.core.Notifier;
+import bluestringpudding.core.Version;
+
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
+public final class NotifyingStore implements Store {
+	private final Store store;
+	private final Notifier notifier;
+
+	public NotifyingStore(final Store store, final Notifier notifier) {
+		this.store = checkNotNull(store);
+		this.notifier = checkNotNull(notifier);
+	}
+
+	@Override
+	public EventStream stream(final Id id) {
+		return store.stream(id);
+	}
+
+	@Override
+	public EventStream stream(final Id id, final Version version) {
+		return store.stream(id, version);
+	}
+
+	@Override
+	public Status store(final Id id, final Version version, final List<Event> events) {
+		final Status status = store.store(id, version, events);
+		if(status.succeeded)	{
+			for(final Event event : events)	{
+				notifier.notify(id, event);
+			}
+		}
+
+		return status;
+	}
+}
+
