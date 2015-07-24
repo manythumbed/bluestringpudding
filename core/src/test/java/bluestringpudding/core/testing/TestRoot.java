@@ -23,11 +23,6 @@ public class TestRoot extends Root {
 		record(new Up(1));
 	}
 
-	public void bigIncrement()	{
-		increment();
-		increment();
-	}
-
 	public void decrement()	{
 		record(new Down(1));
 	}

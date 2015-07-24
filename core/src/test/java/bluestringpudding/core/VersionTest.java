@@ -17,6 +17,14 @@ public class VersionTest {
 	}
 
 	@Test
+	public void shouldCheck()	{
+		final Version version = new Version(123);
+
+		assertThat(version.check(122)).isFalse();
+		assertThat(version.check(124)).isFalse();
+		assertThat(version.check(123)).isTrue();
+	}
+	@Test
 	public void shouldImplementEqualsCorrectly()	{
 		final Version a = new Version(1);
 		final Version b = new Version(2);
